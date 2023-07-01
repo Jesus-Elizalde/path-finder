@@ -14,7 +14,7 @@ const Grid: React.FC = () => {
     []
   );
 
-  const createGrid = () => {
+  const createGrid = (numRows: number, numCols: number) => {
     // Create a 2D array representing the grid
     const newGrid: number[][] = [];
     for (let row = 0; row < numRows; row++) {
@@ -27,20 +27,26 @@ const Grid: React.FC = () => {
     setGrid(newGrid);
   };
 
-  const handleCellClick = (row: number, col: number) => {
-    // If start point is not set, set the clicked cell as the start point
-    if (!startPoint) {
+  const handleCellClick = (
+    row: number,
+    col: number,
+    e: React.MouseEvent<HTMLDivElement>
+  ) => {
+    // Left click to set the start point
+    if (e.button === 0 && !startPoint) {
       setStartPoint({ row, col });
       return;
     }
 
-    // If finish point is not set, set the clicked cell as the finish point
-    if (!finishPoint) {
+    // Left click + Shift to set the end point
+    if (e.button === 0 && e.shiftKey && !finishPoint) {
       setFinishPoint({ row, col });
       return;
     }
 
+    // Hold 'O' key + hover to add/remove obstacles
     // Otherwise, toggle obstacles on the clicked cell
+
     const obstacleIndex = obstacles.findIndex(
       (obstacle) => obstacle.row === row && obstacle.col === col
     );
@@ -76,7 +82,11 @@ const Grid: React.FC = () => {
 
   return (
     <div>
-      <button onClick={createGrid}>Create Grid</button>
+      <button onClick={() => createGrid(10, 10)}>Create Grid</button>
+
+      <div>
+        <button onClick={handlePathFinding}>Find Path</button>
+      </div>
       <div className="grid">
         {grid.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
@@ -98,13 +108,10 @@ const Grid: React.FC = () => {
                   ? "obstacle"
                   : ""
               }`}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
+              onClick={(e) => handleCellClick(rowIndex, colIndex, e)}
             />
           ))
         )}
-      </div>
-      <div>
-        <button onClick={handlePathFinding}>Find Path</button>
       </div>
     </div>
   );
