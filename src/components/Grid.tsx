@@ -34,7 +34,7 @@ const Grid: React.FC = () => {
   ) => {
     // Left click to set the start point
     if (e.button === 0 && !startPoint) {
-      setStartPoint({ row, col });
+      handleStartPointSelection(row, col);
       return;
     }
 
@@ -58,6 +58,7 @@ const Grid: React.FC = () => {
   };
 
   const handleStartPointSelection = (row: number, col: number) => {
+    setStartPoint(null);
     setStartPoint({ row, col });
   };
 
